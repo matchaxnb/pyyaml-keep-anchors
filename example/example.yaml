@@ -1,0 +1,4 @@
+key_one: &anchor_val 123
+key_two: &anchor
+  sub_key: *anchor_val
+key_three: *anchor
