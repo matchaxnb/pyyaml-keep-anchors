@@ -24,7 +24,6 @@ from yaml.events import *
 import collections
 
 
-
 class anchorable_dict(dict):
     """A dict with has_anchor and anchor_name properties"""
     @property
@@ -146,6 +145,7 @@ class AliasResolverYamlConstructor(BaseConstructor):
         return mapping
 
     def construct_sequence(self, node, deep=False):
+
         if not isinstance(node, SequenceNode):
             raise ConstructorError(None, None,
                                    "expected a sequence node, but found %s" % node.id,
@@ -160,9 +160,15 @@ class AliasResolverYamlConstructor(BaseConstructor):
             raise ConstructorError(None, None,
                     "expected a scalar node, but found %s" % node.id,
                     node.start_mark)
+        if node.tag == 'tag:yaml.org,2002:int':
+            node.value = int(node.value)
+        elif node.tag == 'tag:yaml.org,2002:float':
+            node.value = float(node.value)
+        elif node.tag == 'tag:yaml.org,2002:binary':
+            node.value = int(node.value)
+        elif node.tag == 'tag:yaml.org,2002:bool':
+            node.value = bool(node.value)
         return build_proxy_from_base(node.value)
-
-
 
 
 class AliasResolverYamlLoader(Reader, Scanner, Parser, AnchorKeeperComposer, AliasResolverYamlConstructor, Resolver):
@@ -174,5 +180,4 @@ class AliasResolverYamlLoader(Reader, Scanner, Parser, AnchorKeeperComposer, Ali
         AnchorKeeperComposer.__init__(self)
         AliasResolverYamlConstructor.__init__(self)
         Resolver.__init__(self)
-
 __all__ = ('AliasResolverYamlLoader', 'anchorable_types')
