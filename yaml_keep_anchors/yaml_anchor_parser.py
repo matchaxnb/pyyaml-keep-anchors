@@ -39,7 +39,7 @@ class anchorable_dict(dict):
         self._anchor = value
 
     def __repr__(self):
-        return "anchorable_dict({0!r})".format([(a, b) for a, b in self.items()])
+        return "anchorable_dict({})".format(super().__repr__())
 
 
 class anchorable_list(list):
@@ -57,7 +57,7 @@ class anchorable_list(list):
         self._anchor = value
 
     def __repr__(self):
-        return "anchorable_list({0!r})".format([repr(a) for a in self])
+        return "anchorable_list({})".format(super().__repr__())
 
 
 def build_proxy_from_base(base):
@@ -160,15 +160,14 @@ class AliasResolverYamlConstructor(BaseConstructor):
             raise ConstructorError(None, None,
                     "expected a scalar node, but found %s" % node.id,
                     node.start_mark)
-        if node.tag == 'tag:yaml.org,2002:int':
-            node.value = int(node.value)
-        elif node.tag == 'tag:yaml.org,2002:float':
-            node.value = float(node.value)
-        elif node.tag == 'tag:yaml.org,2002:binary':
-            node.value = int(node.value)
-        elif node.tag == 'tag:yaml.org,2002:bool':
-            node.value = bool(node.value)
-        return build_proxy_from_base(node.value)
+        value = SafeConstructor().construct_object(node)
+        # the following types currently dont work with build_proxy_from_base
+        if node.tag in (
+            'tag:yaml.org,2002:bool',
+            'tag:yaml.org,2002:timestamp'
+        ):
+            return value
+        return build_proxy_from_base(value)
 
 
 class AliasResolverYamlLoader(Reader, Scanner, Parser, AnchorKeeperComposer, AliasResolverYamlConstructor, Resolver):
