@@ -9,7 +9,7 @@ For the moment we support only keeping anchor names on sequences and mappings.
 If you need to solve other anchors feel free to extend. You just need to add
 methods co AliasResolverYamlConstructor
 
-Contribute at https://github.com/ChloeTigre/pyyaml-keep-anchors
+Contribute at https://github.com/matchaxnb/pyyaml-keep-anchors
 
 # Example
 
