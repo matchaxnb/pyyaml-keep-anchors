@@ -9,5 +9,11 @@ setup(
     packages=find_packages('.'),
     install_requires=[
         'PyYAML'
+    ],
+
+    tests_require=[
+        'pytest',
+        'pytest-cov',
+        'pytest-runner',
     ]
 )
